@@ -253,7 +253,12 @@ class HomeContent extends StatelessWidget {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                GestureDetector(
+                PropertyCard(
+                  imageUrl:
+                      'https://s3-alpha-sig.figma.com/img/c0b5/b84e/e1d4028e9f2ad18d455cc20f8f30bcce?Expires=1723420800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JzIUQzFFvR08qwpKGbXfD2-UcOnbMcU30kPGUDDI2NB-oMOPBYmRp6vVWn9VvYfW6PKNkIYh9Z9YxnT9aBUkw3MFvu-nbjG7lwbxL0PcplbogsCUjV1VUQ-qed4KvhRLrD~9KPFCiL0wYGryYkRXYsNYnet6VDyr9tw5mdxtlbz6TP-tydqzi1B09kVHuY~bGUiHZZ1Y5GvpPAMevDHRYOShsq5K2aDS0bkQ1Uz~cIwfnUpxW4V5O2fScWfc2h2lQazOcBK-MRb-StEhISeq1-kJZDI4KjJD4Om-l8EPpCmNk0kg~MYKjuguaVENKdKHg5CWGcy9Ehwgwhy3RwN81g__',
+                  title: 'Dreamsville House',
+                  address: 'JL Sultan Iskandar Muda',
+                  distance: '1.8 km',
                   onTap: () {
                     Navigator.push(
                       context,
@@ -263,17 +268,16 @@ class HomeContent extends StatelessWidget {
                 ),
                 PropertyCard(
                   imageUrl:
-                      'https://s3-alpha-sig.figma.com/img/c0b5/b84e/e1d4028e9f2ad18d455cc20f8f30bcce?Expires=1723420800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JzIUQzFFvR08qwpKGbXfD2-UcOnbMcU30kPGUDDI2NB-oMOPBYmRp6vVWn9VvYfW6PKNkIYh9Z9YxnT9aBUkw3MFvu-nbjG7lwbxL0PcplbogsCUjV1VUQ-qed4KvhRLrD~9KPFCiL0wYGryYkRXYsNYnet6VDyr9tw5mdxtlbz6TP-tydqzi1B09kVHuY~bGUiHZZ1Y5GvpPAMevDHRYOShsq5K2aDS0bkQ1Uz~cIwfnUpxW4V5O2fScWfc2h2lQazOcBK-MRb-StEhISeq1-kJZDI4KjJD4Om-l8EPpCmNk0kg~MYKjuguaVENKdKHg5CWGcy9Ehwgwhy3RwN81g__',
-                  title: 'Dreamsville House',
-                  address: 'JL Sultan Iskandar Muda',
-                  distance: '1.8 km',
-                ),
-                PropertyCard(
-                  imageUrl:
                       'https://s3-alpha-sig.figma.com/img/fc2a/22eb/77b12515a6310130b669ed3062ff9bd9?Expires=1723420800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=UnZyt-enOGILMJJAcHek0pWMKYsUk1N-31SIZr5~TZO7MaGLTtyfWdlZig9eOgzv1Xgsv2UYVztUrcBQQXPNcmeF03BxcnNoEDauLY~dxw6FPbZ8dAiJyM9nHbETgxyq88rTeLa3ia9VdwXA8QwGCtNZY2Zcm7ayZK7Ug~~EmInSHD6doqS85k3vmoQW~M-QJaSPsoTEi3cTCeqLt3zPFfweagMT3YHOSeqgRClSIQnAz5cCj4rUtl6ATpUwSsvDWFkSLVPrT0Nimt9mntiAw8fXtXF~R8aAwqKNuf8b3z2uvrIR-FbKD5UeG22aRsXLTI92VuldCPG0jk3ynA1aTg__',
                   title: 'Ascot House',
                   address: 'JL Cilandak Tengah',
                   distance: '3.0 km',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DetailScreen()),
+                    );
+                  },
                 ),
               ],
             ),
@@ -377,99 +381,104 @@ class PropertyCard extends StatelessWidget {
   final String title;
   final String address;
   final String distance;
+  final VoidCallback onTap;
 
   PropertyCard({
     required this.imageUrl,
     required this.title,
     required this.address,
     required this.distance,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 222,
-      margin: const EdgeInsets.only(right: 24),
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.network(
-              imageUrl,
-              width: 222,
-              height: 272,
-              fit: BoxFit.fitHeight,
-            ),
-          ),
-          Positioned(
-            top: 15,
-            right: 15,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color:
-                    const Color.fromARGB(255, 102, 102, 102).withOpacity(0.3),
-                borderRadius: BorderRadius.circular(12),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 222,
+        margin: const EdgeInsets.only(right: 24),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.network(
+                imageUrl,
+                width: 222,
+                height: 272,
+                fit: BoxFit.fitHeight,
               ),
-              child: Row(
-                children: [
-                  const SizedBox(width: 4),
-                  SvgPicture.asset(
-                    'assets/vector/location.svg',
-                    width: 10,
-                    height: 12,
+            ),
+            Positioned(
+              top: 15,
+              right: 15,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color:
+                      const Color.fromARGB(255, 102, 102, 102).withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 4),
+                    SvgPicture.asset(
+                      'assets/vector/location.svg',
+                      width: 10,
+                      height: 12,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(distance, style: const TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 60,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(20),
                   ),
-                  const SizedBox(width: 6),
-                  Text(distance, style: const TextStyle(color: Colors.white)),
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.transparent,
+                      Color.fromARGB(165, 0, 0, 0),
+                      Color.fromARGB(165, 0, 0, 0),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 16,
+              left: 20,
+              right: 10,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    address,
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
                 ],
               ),
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 60,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(20),
-                ),
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.transparent,
-                    Color.fromARGB(165, 0, 0, 0),
-                    Color.fromARGB(165, 0, 0, 0),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 16,
-            left: 20,
-            right: 10,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  address,
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
