@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:slidable_drawer/slidable_drawer.dart';
 import 'package:testonline/Page/Detail/detail.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -8,14 +9,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
   int _selectedCategoryIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   void _onCategoryTapped(int index) {
     setState(() {
@@ -25,46 +19,167 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
+      drawer: null,
+      body: SlidableDrawer(
+        drawerWidth:
+            screenWidth, // Set the drawer width to cover the entire screen
+        drawerBody: Container(
+          width: screenWidth,
+          padding: const EdgeInsets.only(top: 100),
+          color: const Color(0xff0A8ED9),
+          child: ListView(
+            children: <Widget>[
+              Stack(
+                children: <Widget>[
+                  Container(
+                    width: 190,
+                    height: 55,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.horizontal(
+                        right: Radius.circular(24),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 20),
+                    child: ListTile(
+                      leading: SvgPicture.asset(
+                        'assets/vector/home.svg',
+                        width: 20,
+                        height: 20,
+                        color: const Color(0xff0A8ED9),
+                      ),
+                      title: const Text(
+                        'Home',
+                        style: TextStyle(
+                          color: Color(0xff0A8ED9),
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              child: Text('Menu'),
-            ),
-            _buildDrawerItem(Icons.home, 'Home', 0),
-            _buildDrawerItem(Icons.person, 'Profile', 1),
-            _buildDrawerItem(Icons.near_me, 'Nearby', 2),
-            _buildDrawerItem(Icons.bookmark, 'Bookmark', 3),
-            _buildDrawerItem(Icons.notifications, 'Notification', 4),
-            _buildDrawerItem(Icons.message, 'Message', 5),
-            _buildDrawerItem(Icons.settings, 'Setting', 6),
-            _buildDrawerItem(Icons.help, 'Help', 7),
-            _buildDrawerItem(Icons.logout, 'Logout', 8),
-          ],
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 20),
+                child: Column(
+                  children: [
+                    buildDrawerItem('assets/vector/profile.svg', 'Profile'),
+                    buildDrawerItem('assets/vector/location.svg', 'Nearby'),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+              const Divider(
+                color: Color.fromARGB(123, 255, 255, 255),
+                height: 1,
+                endIndent: 230,
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 20),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    buildDrawerItem('assets/vector/bookmark.svg', 'Bookmark'),
+                    buildDrawerItemWithNotification(
+                        'assets/vector/noti.svg', 'Notification', true),
+                    buildDrawerItemWithNotification(
+                        'assets/vector/message.svg', 'Message', true),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+              const Divider(
+                color: Color.fromARGB(123, 255, 255, 255),
+                height: 1,
+                endIndent: 230,
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 20),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    buildDrawerItem('assets/vector/setting.svg', 'Setting'),
+                    buildDrawerItem('assets/vector/help.svg', 'Help'),
+                    buildDrawerItem('assets/vector/logout.svg', 'Logout'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        child: HomeContent(
+          selectedCategoryIndex: _selectedCategoryIndex,
+          onCategoryTapped: _onCategoryTapped,
         ),
       ),
-      body: _selectedIndex == 0
-          ? HomeContent(
-              selectedCategoryIndex: _selectedCategoryIndex,
-              onCategoryTapped: _onCategoryTapped,
-            )
-          : Center(child: Text("Selected Index: $_selectedIndex")),
     );
   }
 
-  ListTile _buildDrawerItem(IconData icon, String title, int index) {
+  Widget buildDrawerItem(String assetPath, String title) {
     return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
+      leading: SvgPicture.asset(
+        assetPath,
+        color: Colors.white,
+        width: 20,
+        height: 20,
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+        ),
+      ),
       onTap: () {
         Navigator.pop(context);
-        _onItemTapped(index);
+      },
+    );
+  }
+
+  Widget buildDrawerItemWithNotification(
+      String assetPath, String title, bool showNotification) {
+    return ListTile(
+      leading: Stack(
+        children: [
+          SvgPicture.asset(
+            assetPath,
+            color: Colors.white,
+            width: 20,
+            height: 20,
+          ),
+          if (showNotification)
+            Positioned(
+              right: 0,
+              top: 0,
+              child: Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+        ],
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+        ),
+      ),
+      onTap: () {
+        Navigator.pop(context);
       },
     );
   }
@@ -97,14 +212,18 @@ class HomeContent extends StatelessWidget {
                       Text(
                         'Location',
                         style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.normal),
+                          fontSize: 12,
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
                       Row(
                         children: [
                           Text(
                             'Jakarta',
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           Icon(Icons.keyboard_arrow_down),
                         ],
@@ -190,7 +309,7 @@ class HomeContent extends StatelessWidget {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Padding(
-            padding: const EdgeInsets.only(right: 16.0, left: 20),
+            padding: const EdgeInsets.only(left: 20),
             child: Row(
               children: [
                 CategoryChip(
@@ -198,25 +317,25 @@ class HomeContent extends StatelessWidget {
                   selected: selectedCategoryIndex == 0,
                   onTap: () => onCategoryTapped(0),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 CategoryChip(
                   label: 'Apartment',
                   selected: selectedCategoryIndex == 1,
                   onTap: () => onCategoryTapped(1),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 CategoryChip(
                   label: 'Hotel',
                   selected: selectedCategoryIndex == 2,
                   onTap: () => onCategoryTapped(2),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 CategoryChip(
                   label: 'Villa',
                   selected: selectedCategoryIndex == 3,
                   onTap: () => onCategoryTapped(3),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 CategoryChip(
                   label: 'Cottage',
                   selected: selectedCategoryIndex == 4,
@@ -237,11 +356,12 @@ class HomeContent extends StatelessWidget {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    'See more',
-                    style: TextStyle(fontSize: 12, color: Color(0xff858585)),
-                  )),
+                onPressed: () {},
+                child: const Text(
+                  'See more',
+                  style: TextStyle(fontSize: 12, color: Color(0xff858585)),
+                ),
+              ),
             ],
           ),
         ),
@@ -272,12 +392,7 @@ class HomeContent extends StatelessWidget {
                   title: 'Ascot House',
                   address: 'JL Cilandak Tengah',
                   distance: '3.0 km',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DetailScreen()),
-                    );
-                  },
+                  onTap: () {},
                 ),
               ],
             ),

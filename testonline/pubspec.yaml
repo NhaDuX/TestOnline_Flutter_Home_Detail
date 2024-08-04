@@ -65,8 +65,18 @@ flutter:
     - assets/vector/noti.svg
     - assets/vector/filter.svg
     - assets/vector/location.svg
+    - assets/vector/home.svg
+    - assets/vector/arrow.svg
+    - assets/vector/bookmark.svg
+    - assets/vector/profile.svg
+    - assets/vector/message.svg
+    - assets/vector/setting.svg
+    - assets/vector/help.svg
+    - assets/vector/logout.svg
     - assets/icons/bed.png
     - assets/icons/bath_icon.png
+    - assets/vector/phone.svg
+    - assets/vector/mess.svg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
